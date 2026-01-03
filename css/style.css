@@ -1,0 +1,423 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+header {
+  background: linear-gradient(135deg, #1a1a1a 0%, #ebf20d 100%);
+  color: white;
+  padding: 1rem 0;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+  position: relative;
+}
+
+nav a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 51, 51, 0.3);
+}
+
+nav a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  border-radius: 8px;
+  transform: scale(0);
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+nav a:hover::before {
+  transform: scale(1);
+}
+
+.logosbg {
+  height: 5rem;
+  border-radius: 1rem;
+}
+
+.hero {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+  url('https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1200') center/cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-top: 60px;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: fadeInUp 1s ease;
+}
+
+.hero-content p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  animation: fadeInUp 1s ease 0.3s;
+  animation-fill-mode: backwards;
+}
+
+.btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: #abaf0d;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: transform 0.3s, background 0.3s;
+  animation: fadeInUp 1s ease 0.6s;
+  animation-fill-mode: backwards;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn:hover {
+  background: #ebf20d;
+  transform: translateY(-3px);
+}
+
+/* Sections */
+section {
+  padding: 5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #1a1a1a;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: black;
+}
+
+/* Chi Siamo */
+.about {
+  background: #f4f4f4;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.about-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.about-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Allenatori */
+.trainers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.trainer-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.trainer-card:hover {
+  transform: translateY(-10px);
+}
+
+.trainer-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.trainer-info {
+  padding: 1.5rem;
+}
+
+.trainer-info h3 {
+  color: black;
+  margin-bottom: 0.5rem;
+}
+
+.trainer-info p {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+/* Galleria */
+.gallery {
+  background: #f4f4f4;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 250px;
+}
+
+.gallery-item img,
+.gallery-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.gallery-item:hover img,
+.gallery-item:hover video {
+  transform: scale(1.1);
+}
+
+.video-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: white;
+  pointer-events: none;
+}
+
+/* Contatti e Iscrizione */
+.contact-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.contact-info {
+  background: #f9f9f9;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.contact-item {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contact-item i {
+  font-size: 1.5rem;
+  color: #ebf20d;
+}
+
+
+/* Footer */
+footer {
+  background: #1a1a1a;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Animazioni */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: white;
+  font-size: 3rem;
+  cursor: pointer;
+}
+
+.success-message {
+  background: #4CAF50;
+  color: white;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.success-message.show {
+  display: block;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  nav {
+    padding: 0 1rem;
+  }
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  /* nasconde il menu desktop sui telefoni */
+  nav .desktop-nav {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+    margin-left: auto;
+  }
+
+  .mobile-nav {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 100%;
+    background: black;
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 0;
+    gap: 1.2rem;
+    z-index: 999;
+  }
+
+  .mobile-nav a {
+    color: white;
+    font-size: 1.2rem;
+    text-decoration: none;
+  }
+
+  .mobile-nav.active {
+    display: flex;
+  }
+
+  footer {
+    background: #1a1a1a;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    width: 150%;
+  }
+}

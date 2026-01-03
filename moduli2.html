@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moduli PDF - Scuola Boxe Gorla</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .moduli-section {
+      padding: 8rem 2rem 5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex: 1;
+    }
+
+    footer {
+      margin-top: auto;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #1a1a1a;
+      position: relative;
+      padding-bottom: 1rem;
+      animation: fadeInUp 1s ease;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: black;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease 0.2s;
+      animation-fill-mode: backwards;
+    }
+
+    .info-box {
+      background: #fff9e6;
+      border-left: 4px solid #ebf20d;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 3rem;
+      animation: fadeInUp 1s ease 0.4s;
+      animation-fill-mode: backwards;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .info-box p {
+      color: #666;
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+
+    .info-box strong {
+      color: #1a1a1a;
+    }
+
+    .pdf-selector {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s ease 0.6s;
+      animation-fill-mode: backwards;
+    }
+
+    .pdf-btn {
+      padding: 1.5rem 2.5rem;
+      background: white;
+      border: 3px solid #1a1a1a;
+      color: #1a1a1a;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .pdf-btn:hover {
+      background: #1a1a1a;
+      color: white;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .pdf-btn.active {
+      background: linear-gradient(135deg, #1a1a1a 0%, #ebf20d 100%);
+      color: white;
+      border-color: #ebf20d;
+      transform: translateY(-5px);
+    }
+
+    /* Selezione sotto-moduli per Atleta Giovanile */
+    .sub-selector {
+      display: none;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem auto;
+      flex-wrap: wrap;
+      max-width: 800px;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .sub-selector.active {
+      display: flex;
+    }
+
+    .sub-btn {
+      padding: 1rem 2rem;
+      background: white;
+      border: 2px solid #ebf20d;
+      color: #1a1a1a;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .sub-btn:hover {
+      background: #ebf20d;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .sub-btn.selected {
+      background: #ebf20d;
+      border-color: #1a1a1a;
+      font-weight: bold;
+    }
+
+    .viewer-container {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem 35rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      display: none;
+      animation: fadeInUp 0.5s ease;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .viewer-container.active {
+      display: block;
+    }
+
+    .pdf-viewer {
+      background: #f4f4f4;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      min-height: 900px;
+      position: relative;
+      width: calc(100% + 60rem);
+      margin-left: -30rem;
+      margin-right: -30rem;
+    }
+
+    #pdf-embed {
+      width: 100%;
+      height: 900px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 4rem;
+      color: #1a1a1a;
+      font-size: 1.2em;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .controls .btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #1a1a1a;
+      border: 2px solid #1a1a1a;
+    }
+
+    .btn-secondary:hover {
+      background: #1a1a1a;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .moduli-section {
+        padding: 6rem 1rem 3rem;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .pdf-selector {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .pdf-btn {
+        width: 100%;
+      }
+
+      .sub-selector {
+        flex-direction: column;
+      }
+
+      .sub-btn {
+        width: 100%;
+      }
+
+      .viewer-container {
+        padding: 2rem 1rem;
+      }
+
+      .pdf-viewer {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        min-height: 600px;
+      }
+
+      #pdf-embed {
+        height: 600px;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .controls .btn {
+        width: 100%;
+      }
+    }
+
+    .btn-help {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #ebf20d;
+      color: #1a1a1a;
+      border: 2px solid #1a1a1a;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .btn-help:hover {
+      background: #1a1a1a;
+      color: #ebf20d;
+      transform: scale(1.1);
+    }
+
+    .tutorial-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tutorial-modal.active {
+      display: flex;
+    }
+
+    .tutorial-content {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 90%;
+      position: relative;
+      animation: slideIn 0.3s ease;
+    }
+
+    .tutorial-close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 2.5rem;
+      color: #1a1a1a;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .tutorial-close:hover {
+      color: #ebf20d;
+    }
+
+    .tutorial-content h3 {
+      color: #1a1a1a;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #000;
+      margin-bottom: 1rem;
+    }
+
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tutorial-content p {
+      color: #666;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .btn-help {
+        width: 100%;
+        height: 50px;
+        border-radius: 8px;
+      }
+
+      .tutorial-content {
+        padding: 1.5rem;
+      }
+
+      .tutorial-content h3 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <img class="logosbg" src="img/logo-sbg.jpeg" alt="Logo Scuola Boxe Gorla">
+    <div class="mobile-menu-toggle" id="mobileMenuToggle">☰</div>
+    <ul class="desktop-nav">
+      <li><a href="index.html#home">Home</a></li>
+      <li><a href="index.html#about">Chi Siamo</a></li>
+      <li><a href="index.html#trainers">Allenatori</a></li>
+      <li><a href="index.html#gallery">Galleria</a></li>
+      <li><a href="index.html#contact">Contatti</a></li>
+    </ul>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">Chi Siamo</a>
+      <a href="index.html#trainers">Allenatori</a>
+      <a href="index.html#gallery">Galleria</a>
+      <a href="index.html#contact">Contatti</a>
+    </div>
+  </nav>
+</header>
+
+<section class="moduli-section">
+  <h1 class="page-title">🥊 Moduli di Iscrizione</h1>
+  <p class="subtitle">Seleziona e compila il modulo appropriato</p>
+
+  <div class="info-box">
+    <p>📋 <strong>Istruzioni:</strong></p>
+    <p><b>1)</b> ATLETA PUGILATO OLIMPICO (AGONISTA) + QUOTE TESSERAMENTO AGONISTI MAGGIORENNE OPPURE QUOTE TESSERAMENTO  AGONISTI MINORENNI UNDER 15 / UNDER 17/ UNDER 19. </p>
+    <p><b>Nota Bene:</b>- per gli atleti maggiorenni firmare il modello di tesseramento/rinnovo e il modulo 1 e 3 del consenso;<br>
+
+      - per gli atleti minorenni firmare uno dei genitori il modello di tesseramento/ rinnovo e il modulo 2 e 4<br>
+
+      - solo al primo tesseramento o in caso di rinnovo discontinuo, occorre compilare l'autodichiarazione relativa all'attività di sport da combattimento (escluso il pugilato) svolta o che si svolgono con altre Federazoni riconosciute dal Coni (FULKAM/FEDERKOMBAT)<br></p>
+    <p><b>2)</b> ATLETA AMATORE (PREPUGILISTICA O GYM BOXE) + QUOTE TESSERAMENTO AMATORI PREPUGILISTICA /GYM BOXE.<br>
+      <b>Nota Bene:</b> - per gli atleti maggiorenni firmare il modello di tesseramento/rinnovo e il modulo 1 e 3 del consenso;<br>
+
+      - per gli atleti minorenni firmare uno dei genitori il modello di tesseramento/ rinnovo e il modulo 2 e 4 </p>
+    <p><b>3)</b> ATLETA GIOVANILE + QUOTE TESSERAMENTO GIOVANILE<br>
+
+      <b>Nota Bene:</b> per gli atleti giovanile firmare il modello di tesseramento/rinnovo uno dei genitori ed inoltre firmare il modulo 2 e 4 </p>
+  </div>
+
+  <div class="pdf-selector">
+    <button class="pdf-btn" onclick="selectCategory('atleta_amatore')">📄 Atleta Amatore</button>
+    <button class="pdf-btn" onclick="selectCategory('atleta_giovanile')">📄 Atleta Giovanile</button>
+    <button class="pdf-btn" onclick="selectCategory('atleta_agonisti')">📄 Atleta Agonisti</button>
+  </div>
+
+  <!-- Selezione sotto-moduli per Atleta Giovanile -->
+  <div class="sub-selector" id="subSelectorGiovanile">
+    <button class="sub-btn" onclick="loadPDF('giovanile_modulo1')">📋 Modulo Iscrizione</button>
+    <button class="sub-btn" onclick="loadPDF('giovanile_modulo2')">💶 Quote Tesseramento</button>
+  </div>
+
+  <!-- Selezione sotto-moduli per Atleta Amatore -->
+  <div class="sub-selector" id="subSelectorAmatore">
+    <button class="sub-btn" onclick="loadPDF('amatore_modulo1')">📋 Modulo Iscrizione</button>
+    <button class="sub-btn" onclick="loadPDF('amatore_modulo2')">💶 Quote Tesseramento</button>
+  </div>
+
+  <!-- Selezione sotto-moduli per Atleta Agonisti -->
+  <div class="sub-selector" id="subSelectorAgonisti">
+    <button class="sub-btn" onclick="selectSubCategory('agonisti_maggiorenni')">👤 Maggiorenni</button>
+    <button class="sub-btn" onclick="selectSubCategory('agonisti_minorenni')">🧒 Minorenni</button>
+  </div>
+
+  <!-- Selezione documenti per Agonisti Maggiorenni -->
+  <div class="sub-selector" id="subSelectorAgonistiMaggiorenni" style="margin-top: 1rem;">
+    <button class="sub-btn" onclick="loadPDF('agonisti_modulo1')">📋 Modulo Iscrizione</button>
+    <button class="sub-btn" onclick="loadPDF('agonisti_modulo2')">📝 Autodichiarazione</button>
+    <button class="sub-btn" onclick="loadPDF('agonisti_modulo3')">💶 Quote Tesseramento</button>
+  </div>
+
+  <!-- Selezione documenti per Agonisti Minorenni -->
+  <div class="sub-selector" id="subSelectorAgonistiMinorenni" style="margin-top: 1rem;">
+    <button class="sub-btn" onclick="loadPDF('agonisti_minori_modulo1')">📋 Modulo Iscrizione</button>
+    <button class="sub-btn" onclick="loadPDF('agonisti_minori_modulo2')">📝 Autodichiarazione</button>
+    <button class="sub-btn" onclick="loadPDF('agonisti_minori_modulo3')">💶 Quote Tesseramento</button>
+  </div>
+
+  <div class="viewer-container" id="viewerContainer">
+    <div class="pdf-viewer">
+      <div id="loading" class="loading">⏳ Caricamento PDF in corso...</div>
+      <iframe id="pdf-embed" style="display: none;"></iframe>
+    </div>
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="resetSelection()">← Cambia Modulo</button>
+      <button class="btn-help" onclick="openTutorial()">❓</button>
+    </div>
+  </div>
+
+  <div id="tutorialModal" class="tutorial-modal" onclick="closeTutorial()">
+    <div class="tutorial-content" onclick="event.stopPropagation()">
+      <span class="tutorial-close" onclick="closeTutorial()">&times;</span>
+      <h3>📹 Come scaricare il modulo compilato</h3>
+      <div class="video-container">
+        <video id="tutorialVideo" controls>
+          <source src="img/tutorial.mov" type="video/mp4">
+          Il tuo browser non supporta i video HTML5.
+        </video>
+      </div>
+      <p>Segui il video tutorial per imparare a scaricare e stampare il modulo compilato.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2024 Scuola Boxe Gorla - SBG. Tutti i diritti riservati.</p>
+  <p>Seguici sui social: Facebook | Instagram | YouTube</p>
+</footer>
+
+<script>
+  const mobileToggle = document.getElementById('mobileMenuToggle');
+  const mobileNav = document.getElementById('mobileNav');
+  mobileToggle.addEventListener('click', () => mobileNav.classList.toggle('active'));
+  document.querySelectorAll('.mobile-nav a').forEach(link => {
+    link.addEventListener('click', () => mobileNav.classList.remove('active'));
+  });
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  let currentPDF = null;
+  let currentPDFUrl = null;
+  let currentCategory = null;
+
+  // Configurazione dei PDF
+  const PDFs = {
+    'giovanile_modulo1': {
+      name: 'Atleta_Giovanile_2026.pdf',
+      title: 'Modulo Iscrizione Giovanile'
+    },
+    'giovanile_modulo2': {
+      name: 'Quote_Tesseramento_2026_Giovanile.pdf',
+      title: 'Quote Tesseramento Giovanile'
+    },
+    'amatore_modulo1': {
+      name: 'Atleta_Amatore_2026.pdf',
+      title: 'Modulo Iscrizione Amatore'
+    },
+    'amatore_modulo2': {
+      name: 'Quote Tesseramento 2026 amatori Prepugilistica-Gym Boxe.pdf',
+      title: 'Quote Tesseramento Amatori'
+    },
+    'agonisti_modulo1': {
+      name: 'Atleta_Pugilato_Olimpico_2026_Agonisti.pdf',
+      title: 'Modulo Iscrizione Agonisti'
+    },
+    'agonisti_modulo2': {
+      name: 'Autodichiarazione_atleta_Maggiorenne_2026_Agonisti.pdf',
+      title: 'Autodichiarazione Agonisti Maggiorenni'
+    },
+    'agonisti_modulo3': {
+      name: 'Quote Tesseramento_2026_agonisti_maggiorenni.pdf',
+      title: 'Quote Tesseramento Agonisti Maggiorenni'
+    },
+    'agonisti_minori_modulo1': {
+      name: 'Atleta_Pugilato_Olimpico_2026_Agonisti.pdf',
+      title: 'Modulo Iscrizione Agonisti Minorenni'
+    },
+    'agonisti_minori_modulo2': {
+      name: 'Autodichiarazione_Atleta_Minorenne_2026_Agonisti.pdf',
+      title: 'Autodichiarazione Agonisti Minorenni'
+    },
+    'agonisti_minori_modulo3': {
+      name: 'Quote Tesseramento_2026_agonisti_minorenni_Under15-Under17 -Under19.pdf',
+      title: 'Quote Tesseramento Agonisti Minorenni'
+    }
+  };
+
+  // Seleziona la categoria principale
+  function selectCategory(category) {
+    // Reset selezioni precedenti
+    document.querySelectorAll('.pdf-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Nascondi tutti i sub-selector
+    document.getElementById('subSelectorGiovanile').classList.remove('active');
+    document.getElementById('subSelectorAmatore').classList.remove('active');
+    document.getElementById('subSelectorAgonisti').classList.remove('active');
+    document.getElementById('subSelectorAgonistiMaggiorenni').classList.remove('active');
+    document.getElementById('subSelectorAgonistiMinorenni').classList.remove('active');
+    document.getElementById('viewerContainer').classList.remove('active');
+
+    currentCategory = category;
+
+    if (category === 'atleta_giovanile') {
+      document.getElementById('subSelectorGiovanile').classList.add('active');
+      document.getElementById('subSelectorGiovanile').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    } else if (category === 'atleta_amatore') {
+      document.getElementById('subSelectorAmatore').classList.add('active');
+      document.getElementById('subSelectorAmatore').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    } else if (category === 'atleta_agonisti') {
+      document.getElementById('subSelectorAgonisti').classList.add('active');
+      document.getElementById('subSelectorAgonisti').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
+
+  // Seleziona la sotto-categoria per agonisti
+  function selectSubCategory(subCategory) {
+    // Reset selezione sotto-pulsanti agonisti
+    document.querySelectorAll('#subSelectorAgonisti .sub-btn').forEach(btn => btn.classList.remove('selected'));
+    event.target.classList.add('selected');
+
+    // Nascondi entrambi i menu documenti
+    document.getElementById('subSelectorAgonistiMaggiorenni').classList.remove('active');
+    document.getElementById('subSelectorAgonistiMinorenni').classList.remove('active');
+
+    if (subCategory === 'agonisti_maggiorenni') {
+      document.getElementById('subSelectorAgonistiMaggiorenni').classList.add('active');
+      document.getElementById('subSelectorAgonistiMaggiorenni').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    } else if (subCategory === 'agonisti_minorenni') {
+      document.getElementById('subSelectorAgonistiMinorenni').classList.add('active');
+      document.getElementById('subSelectorAgonistiMinorenni').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
+
+  // Carica il PDF selezionato
+  async function loadPDF(type) {
+    const pdfInfo = PDFs[type];
+    if (!pdfInfo) return;
+
+    // Evidenzia il sotto-pulsante selezionato
+    if (type.startsWith('giovanile_')) {
+      document.querySelectorAll('#subSelectorGiovanile .sub-btn').forEach(btn => btn.classList.remove('selected'));
+    } else if (type.startsWith('amatore_')) {
+      document.querySelectorAll('#subSelectorAmatore .sub-btn').forEach(btn => btn.classList.remove('selected'));
+    } else if (type.startsWith('agonisti_minori_')) {
+      document.querySelectorAll('#subSelectorAgonistiMinorenni .sub-btn').forEach(btn => btn.classList.remove('selected'));
+    } else if (type.startsWith('agonisti_')) {
+      document.querySelectorAll('#subSelectorAgonistiMaggiorenni .sub-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+    event.target.classList.add('selected');
+
+    const container = document.getElementById('viewerContainer');
+    const loading = document.getElementById('loading');
+    const iframe = document.getElementById('pdf-embed');
+
+    container.classList.add('active');
+    loading.style.display = 'block';
+    iframe.style.display = 'none';
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const pdfPath = `pdf/${pdfInfo.name}`;
+    currentPDF = type;
+    currentPDFUrl = pdfPath;
+    iframe.src = pdfPath;
+
+    iframe.onload = function() {
+      loading.style.display = 'none';
+      iframe.style.display = 'block';
+    };
+
+    iframe.onerror = function() {
+      loading.innerHTML = `
+        <p style="color: #cc0000;">❌ PDF non trovato</p>
+        <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
+          Assicurati che il file <strong>${pdfInfo.name}</strong> sia nella cartella <strong>pdf/</strong>
+        </p>
+      `;
+    };
+  }
+
+  // Reset selezione e torna all'inizio
+  function resetSelection() {
+    document.getElementById('viewerContainer').classList.remove('active');
+    document.getElementById('subSelectorGiovanile').classList.remove('active');
+    document.getElementById('subSelectorAmatore').classList.remove('active');
+    document.getElementById('subSelectorAgonisti').classList.remove('active');
+    document.getElementById('subSelectorAgonistiMaggiorenni').classList.remove('active');
+    document.getElementById('subSelectorAgonistiMinorenni').classList.remove('active');
+    document.querySelectorAll('.pdf-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('selected'));
+    currentPDF = null;
+    currentPDFUrl = null;
+    currentCategory = null;
+    document.getElementById('pdf-embed').src = '';
+    document.querySelector('.pdf-selector').scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
+
+  function openTutorial() {
+    const modal = document.getElementById('tutorialModal');
+    const video = document.getElementById('tutorialVideo');
+    modal.classList.add('active');
+    video.play();
+  }
+
+  function closeTutorial() {
+    const modal = document.getElementById('tutorialModal');
+    const video = document.getElementById('tutorialVideo');
+    modal.classList.remove('active');
+    video.pause();
+    video.currentTime = 0;
+  }
+</script>
+</body>
+</html>
