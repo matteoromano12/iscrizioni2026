@@ -34,8 +34,10 @@
     .mobile-pdf-info { display: none; background: #f4f4f4; padding: 2rem; border-radius: 10px; margin: 2rem 0; text-align: center; }
     .mobile-pdf-info h3 { color: #1a1a1a; margin-bottom: 1rem; font-size: 1.3rem; }
     .mobile-pdf-info p { color: #666; margin: 0.5rem 0; line-height: 1.6; }
-    .btn-download { background: #4CAF50; color: white; border: 2px solid #4CAF50; padding: 1.5rem 3rem; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: all 0.3s ease; text-decoration: none; display: inline-block; margin: 1rem 0; }
+    .btn-download { background: #4CAF50; color: white; border: 2px solid #4CAF50; padding: 1.5rem 3rem; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: all 0.3s ease; text-decoration: none; display: inline-block; margin: 0.5rem 0; width: 100%; max-width: 400px; text-align: center; }
     .btn-download:hover { background: #45a049; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3); }
+    .btn-download:nth-child(4) { background: #FF9800; border-color: #FF9800; }
+    .btn-download:nth-child(4):hover { background: #F57C00; box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3); }
     .controls { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
     .btn-secondary { background: white; color: #1a1a1a; border: 2px solid #1a1a1a; padding: 1rem 2rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: all 0.3s; }
     .btn-secondary:hover { background: #1a1a1a; color: white; }
@@ -46,7 +48,7 @@
       .pdf-selector { flex-direction: column; gap: 1rem; }
       .pdf-btn, .sub-btn { width: 100%; }
       .sub-selector { flex-direction: column; }
-      .info-box { display: block; }
+      .info-box { display: none; }
       .mobile-notice { display: block; }
       .viewer-container { padding: 1rem; }
       #pdf-embed { display: none !important; }
@@ -86,28 +88,19 @@
 
   <div class="info-box">
     <p>📋 <strong>Istruzioni:</strong></p>
-    <p><b>1)</b> ATLETA PUGILATO OLIMPICO (AGONISTA) + QUOTE TESSERAMENTO AGONISTI MAGGIORENNE OPPURE QUOTE TESSERAMENTO  AGONISTI MINORENNI UNDER 15 / UNDER 17/ UNDER 19. </p>
-    <p><b>Nota Bene:</b>- per gli atleti maggiorenni firmare il modello di tesseramento/rinnovo e il modulo 1 e 3 del consenso;<br>
-
-      - per gli atleti minorenni firmare uno dei genitori il modello di tesseramento/ rinnovo e il modulo 2 e 4<br>
-
-      - solo al primo tesseramento o in caso di rinnovo discontinuo, occorre compilare l'autodichiarazione relativa all'attività di sport da combattimento (escluso il pugilato) svolta o che si svolgono con altre Federazoni riconosciute dal Coni (FULKAM/FEDERKOMBAT)<br></p>
-    <p><b>2)</b> ATLETA AMATORE (PREPUGILISTICA O GYM BOXE) + QUOTE TESSERAMENTO AMATORI PREPUGILISTICA /GYM BOXE.<br>
-      <b>Nota Bene:</b> - per gli atleti maggiorenni firmare il modello di tesseramento/rinnovo e il modulo 1 e 3 del consenso;<br>
-
-      - per gli atleti minorenni firmare uno dei genitori il modello di tesseramento/ rinnovo e il modulo 2 e 4 </p>
-    <p><b>3)</b> ATLETA GIOVANILE + QUOTE TESSERAMENTO GIOVANILE<br>
-
-      <b>Nota Bene:</b> per gli atleti giovanile firmare il modello di tesseramento/rinnovo uno dei genitori ed inoltre firmare il modulo 2 e 4 </p>
+    <p>1. Seleziona il modulo appropriato qui sotto</p>
+    <p>2. Per alcune categorie, scegli il tipo di documento</p>
+    <p>3. Il PDF si aprirà - compila tutti i campi richiesti</p>
   </div>
   
   <div class="mobile-notice">
     <p>📱 <strong>Istruzioni Mobile:</strong></p>
     <p>1. Seleziona categoria e modulo</p>
     <p>2. Clicca "📥 Scarica PDF"</p>
-    <p>3. Il PDF si aprirà nel browser</p>
-    <p>4. Compila i campi nel PDF</p>
-    <p>5. Usa "Condividi" o "Salva" per salvare</p>
+    <p>3. Apri il PDF con un'app (es. Adobe Reader)</p>
+    <p>4. Compila i campi nell'app PDF</p>
+    <p>5. Salva il documento compilato</p>
+    <p style="margin-top: 0.5rem; font-size: 0.9rem;">💡 Ti serve un'app per compilare PDF? Scarica <strong>Adobe Acrobat Reader</strong> gratuitamente</p>
   </div>
 
   <div class="pdf-selector">
@@ -151,10 +144,13 @@
     
     <div id="mobile-pdf-content" class="mobile-pdf-info">
       <h3 id="pdf-title">📄 Documento PDF</h3>
-      <p>Clicca il pulsante qui sotto per aprire il PDF.</p>
-      <p>Potrai compilarlo dopo averlo scaricato sul tuo telefono.</p>
-      <a id="mobile-download-link" class="btn-download" target="_blank">📥 Apri e Compila PDF</a>
-      <p style="font-size: 0.9rem; color: #999; margin-top: 1rem;"> </p>
+      <p>Scegli come vuoi gestire il PDF:</p>
+      <br>
+      <a id="mobile-open-link" class="btn-download" target="_blank">📱 Apri nel Browser</a>
+      <br>
+      <a id="mobile-download-link" class="btn-download" style="background: #FF9800; border-color: #FF9800;" download>💾 Scarica PDF</a>
+      <br>
+      <p style="font-size: 0.9rem; color: #999; margin-top: 1rem;">💡 <strong>Consiglio:</strong> Se i campi non sono compilabili nel browser, scarica il PDF e aprilo con un'app PDF (Adobe Reader, Foxit, ecc.)</p>
     </div>
     
     <div class="controls">
@@ -226,9 +222,19 @@
     container.classList.add('active');
     
     if (isMobile) {
-      // Mobile: mostra pulsante download
+      // Mobile: mostra entrambi i pulsanti
       document.getElementById('pdf-title').textContent = pdfInfo.title;
-      document.getElementById('mobile-download-link').href = pdfPath;
+      
+      // Pulsante Apri
+      const openLink = document.getElementById('mobile-open-link');
+      openLink.href = pdfPath;
+      openLink.onclick = null; // Apri normalmente in nuova tab
+      
+      // Pulsante Scarica
+      const downloadLink = document.getElementById('mobile-download-link');
+      downloadLink.href = pdfPath;
+      downloadLink.download = pdfInfo.name;
+      
     } else {
       // Desktop: usa iframe
       const loading = document.getElementById('loading');
